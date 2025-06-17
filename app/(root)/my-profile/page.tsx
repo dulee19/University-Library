@@ -1,25 +1,56 @@
-import { signOut } from "@/auth";
+import { Button } from "@/components/ui/button";
+import { auth, signOut } from "@/auth";
 import BookList from "@/components/BookList";
-import { Button } from "@/components/ui/button"
-import { sampleBooks } from "@/constants";
+import { db } from "@/database/drizzle";
+import { eq } from "drizzle-orm";
+import { books, borrowRecords } from "@/database/schema";
 
-const MyProfile = () => {
+const MyProfile = async () => {
+   const session = await auth();
+
+    const borrowedBooks = await db
+    .select({
+      borrowId: borrowRecords.id,
+      status: borrowRecords.status,
+      borrowDate: borrowRecords.borrowDate,
+      dueDate: borrowRecords.dueDate,
+      returnDate: borrowRecords.returnDate,
+      id: books.id,
+      bookId: books.id,
+      title: books.title,
+      author: books.author,
+      genre: books.genre,
+      rating: books.rating,
+      coverUrl: books.coverUrl,
+      coverColor: books.coverColor,
+    })
+    .from(borrowRecords)
+    .innerJoin(books, eq(borrowRecords.bookId, books.id))
+    
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    .where(eq(borrowRecords.userId, session?.user?.id))
+    .orderBy(borrowRecords.borrowDate)
+    .limit(10);
+
+
   return (
     <>
-        <form 
+      <form
         action={async () => {
-            'use server';
+          "use server";
 
-            await signOut();
-         }}
-         className="mb-10"
-        >
-            <Button>Logout</Button>
-        </form>
+          await signOut();
+        }}
+        className="mb-10"
+      >
+        <Button>Logout</Button>
+      </form>
 
-        <BookList title="Borrowed Books" books={sampleBooks} />
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
+      <BookList title="Borrowed Books" books={borrowedBooks} />
     </>
-  )
-}
-
-export default MyProfile
+  );
+};
+export default MyProfile;

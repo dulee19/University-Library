@@ -60,7 +60,7 @@ export const signUp = async (params: AuthCredentials) => {
         await db.insert(users).values({
             fullName,
             email,
-            universityId,
+            universityId: Number(universityId),
             password: hashedPassword,
             universityCard,
         });

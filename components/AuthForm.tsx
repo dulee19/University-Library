@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FIELD_NAMES, FIELD_TYPES } from "@/constants";
-import ImageUpload from "./ImageUpload";
+import FileUpload from "./FileUpload";
 import { toast } from "sonner";
 
 interface Props<T extends FieldValues> {
@@ -30,6 +30,8 @@ const AuthForm = <T extends FieldValues>({ type, schema, defaultValues, onSubmit
     const isSignIn = type === "SIGN_IN";
 
     const form: UseFormReturn<T> = useForm({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         resolver: zodResolver(schema),
         defaultValues: defaultValues as DefaultValues<T>
     })
@@ -80,7 +82,14 @@ const AuthForm = <T extends FieldValues>({ type, schema, defaultValues, onSubmit
                                 </FormLabel>
                                 <FormControl>
                                     {field.name === "universityCard" ? (
-                                        <ImageUpload onFileChange={field.onChange} />
+                                        <FileUpload
+                                            type="image"
+                                            accept="image/*"
+                                            placeholder="Upload your ID"
+                                            folder="ids"
+                                            variant="dark"
+                                            onFileChange={field.onChange}
+                                        />
                                     ) : (
                                         <Input type={FIELD_TYPES[field.name as keyof typeof FIELD_TYPES]} className="form-input" {...field} />
                                     )}
@@ -89,7 +98,6 @@ const AuthForm = <T extends FieldValues>({ type, schema, defaultValues, onSubmit
                         )}
                     />
                 ))}
-
 
                 <Button type="submit" className="form-btn">
                     {isSignIn ? "Sign In" : "Sign Up"}

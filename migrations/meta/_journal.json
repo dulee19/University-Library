@@ -8,6 +8,20 @@
       "when": 1749623438217,
       "tag": "0000_yellow_rocket_racer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750078914006,
+      "tag": "0001_pink_puppet_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750151601592,
+      "tag": "0002_hot_donald_blake",
+      "breakpoints": true
     }
   ]
 }
